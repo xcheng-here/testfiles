@@ -1,0 +1,50 @@
+From 487a1700bb1b97c1e952e179b13c2aa8d46a0795 Mon Sep 17 00:00:00 2001
+From: "cheng.xiang" <ext-cheng.xiang@here.com>
+Date: Mon, 5 Aug 2019 17:10:31 +0800
+Subject: [PATCH] boot in qemu, cpu number must be set to 1
+
+---
+ drivers/mmc/bcm2835_sdhci.c | 2 ++
+ lib/time.c                  | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/drivers/mmc/bcm2835_sdhci.c b/drivers/mmc/bcm2835_sdhci.c
+index 3157354d2a..b18ae231b5 100644
+--- a/drivers/mmc/bcm2835_sdhci.c
++++ b/drivers/mmc/bcm2835_sdhci.c
+@@ -79,11 +79,13 @@ static inline void bcm2835_sdhci_raw_writel(struct sdhci_host *host, u32 val,
+ 	 * (Which is just as well - otherwise we'd have to nobble the DMA engine
+ 	 * too)
+ 	 */
++#if 0
+ 	if (reg != SDHCI_BUFFER) {
+ 		while (timer_get_us() - bcm_host->last_write <
+ 		       bcm_host->twoticks_delay)
+ 			;
+ 	}
++#endif
+ 
+ 	writel(val, host->ioaddr + reg);
+ 	bcm_host->last_write = timer_get_us();
+diff --git a/lib/time.c b/lib/time.c
+index aed1a091f2..a0a610ef5b 100644
+--- a/lib/time.c
++++ b/lib/time.c
+@@ -150,12 +150,14 @@ static uint64_t usec_to_tick(unsigned long usec)
+ 
+ void __weak __udelay(unsigned long usec)
+ {
++#if 0
+ 	uint64_t tmp;
+ 
+ 	tmp = get_ticks() + usec_to_tick(usec);	/* get current timestamp */
+ 
+ 	while (get_ticks() < tmp+1)	/* loop till event */
+ 		 /*NOP*/;
++#endif
+ }
+ 
+ /* ------------------------------------------------------------------------- */
+-- 
+2.17.1
+
