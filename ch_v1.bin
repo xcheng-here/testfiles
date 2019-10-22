@@ -1,0 +1,19 @@
+ow that https://github.com/advancedtelematic/treehub/pull/70 is merged,
+the backend supports streaming content directly to s3 (or wherever) instead of copying. 
+However, this requires that our garage tools properly set some header metadata as described in that PR. 
+We should do this to improve robustness and efficiency; it should not actually be hard.
+
+from xiang to everyone:
+arm-oe-linux-gnueabi-gcc
+from xiang to everyone:
+cmake ../ -DBUILD_SOTA_TOOLS=ON -DBUILD_OSTREE=ON -DCMAKE_BUILD_TYPE=Debug -DCC=arm-oe-linux-gnueabi-gcc -DCXX=arm-oe-linux-gnueabi-g++
+
++ TEST_INSTALL_DESTDIR=/tmp/tmp.CwKo2kCrDp/aktualizr
++ /builds/olp/edge/ota/connect/client/aktualizr/build-coverage/src/aktualizr_primary/aktualizr --version
++ ./scripts/selfupdate_server.py 8000 /tmp/tmp.CwKo2kCrDp/aktualizr
+/builds/olp/edge/ota/connect/client/aktualizr/scripts/test_install_aktualizr_and_update.sh: line 8: ./scripts/selfupdate_server.py: No such file or directory
+Current aktualizr version is: 2019.8-9-g168fd35c
++ /builds/olp/edge/ota/connect/client/aktualizr/build-coverage/src/uptane_generator/uptane-generator generate --path /tmp/tmp.CwKo2kCrDp/aktualizr/fake_root
+Uptane metadata repos generated at "/tmp/tmp.CwKo2kCrDp/aktualizr/fake_root"
++ /builds/olp/edge/ota/connect/client/aktualizr/build-coverage/src/uptane_generator/uptane-generator image --path /tmp/tmp.CwKo2kCrDp/aktualizr/fake_root --targetname selfupdate_2.0 --filename /tmp/tmp.CwKo2kCrDp/aktualizr/selfupdate_2.0 --hwid selfupdate-device
+Exception: boost::filesystem::copy_file: No such file or directory: "/tmp/tmp.CwKo2kCrDp/aktualizr/selfupdate_2.0", "/tmp/tmp.CwKo2kCrDp/aktualizr/fake_root/repo/repo/targets/selfupdate_2.0"
